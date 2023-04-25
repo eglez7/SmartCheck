@@ -1,13 +1,13 @@
-package app.smartdevelop.smartcheck.ui.slideshow
+package app.smartdevelop.smartcheck.ui.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class SlideshowViewModel : ViewModel() {
+class DetailViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is slideshow Fragment"
+        value = "Detail"
     }
     val text: LiveData<String> = _text
 }
