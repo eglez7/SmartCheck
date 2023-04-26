@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">SmartCheck</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -7,7 +6,27 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+    <string name="app_name">Smart Check</string>
+
     <string name="menu_list">Listas</string>
     <string name="menu_detail">Detalles</string>
     <string name="menu_about">Acerca de</string>
+
+    <string name="add_checklist">Nueva Lista</string>
+    <string name="create">Crear</string>
+    <string name="cancel">Cancelar</string>
+    <string name="nueva_lista_descripcion">Nueva lista</string>
+    <string name="nuevo_item_descripcion">Nuevo Item</string>
+    <string name="add_detail">Nuevo item</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Eliminar</string>
+    <string name="save">Guardar</string>
+    <string name="edit_checklist">Editar</string>
+    <string name="deleted">Eliminado</string>
+    <string name="updated">Actualizado</string>
+    <string name="checkbox">CheckBox</string>
+    <string name="texto_alternativo">texto alternativo</string>
+    <string name="Uncheck_all">Desmarcar todas</string>
+
+
 </resources>
