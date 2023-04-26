@@ -1,4 +1,4 @@
-package app.smartdevelop.smartcheck
+package app.smartdevelop.smartcheck.ui
 
 import android.os.Bundle
 import android.view.Menu
@@ -11,6 +11,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import app.smartdevelop.smartcheck.R
 import app.smartdevelop.smartcheck.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
-        binding.appBarMain.fab.setOnClickListener { view ->
+        binding.appBarMain.toolbar.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }

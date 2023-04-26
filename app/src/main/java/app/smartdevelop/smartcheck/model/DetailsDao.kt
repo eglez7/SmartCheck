@@ -1,4 +1,4 @@
-package app.smartdevelop.smartcheck.controler
+package app.smartdevelop.smartcheck.model
 
 import androidx.room.Dao
 import androidx.room.Delete
