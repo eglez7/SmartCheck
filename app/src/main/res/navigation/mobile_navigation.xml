@@ -3,19 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_list">
 
     <fragment
-        android:id="@+id/nav_home"
+        android:id="@+id/nav_list"
         android:name="app.smartdevelop.smartcheck.ui.list.ListFragment"
         android:label="@string/menu_list"
         tools:layout="@layout/fragment_list" />
-
-    <fragment
-        android:id="@+id/nav_gallery"
-        android:name="app.smartdevelop.smartcheck.ui.detail.DetailFragment"
-        android:label="@string/menu_detail"
-        tools:layout="@layout/fragment_detail" />
 
     <fragment
         android:id="@+id/nav_slideshow"
