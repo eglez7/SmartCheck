@@ -1,5 +1,6 @@
 package app.smartdevelop.smartcheck.model
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -13,7 +14,7 @@ interface ChecklistsDao {
     suspend fun insert(vararg checklists: Checklists)
 
     @Query("SELECT * FROM checklists")
-    suspend fun getChecklists(): List<Checklists>
+    fun getChecklists(): List<Checklists>
 
     @Query("SELECT * FROM checklists WHERE id = :id LIMIT 1")
     suspend fun getChecklistsById(id: Int): Checklists?

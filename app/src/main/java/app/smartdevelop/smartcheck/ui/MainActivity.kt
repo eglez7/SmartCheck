@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        room = Room.databaseBuilder(applicationContext, Checklistdb::class.java,"checklist").build()
+
         setSupportActionBar(binding.appBarMain.toolbar)
 
         binding.appBarMain.toolbar.setOnClickListener { view ->

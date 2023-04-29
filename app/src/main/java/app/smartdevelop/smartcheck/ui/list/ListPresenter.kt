@@ -24,7 +24,7 @@ class ListPresenter(private val context: Context, private val scope: CoroutineSc
 
     fun getListsDB() {
         scope.launch {
-            adapter = MainActivity.room.checklistsDao().getChecklists()
+//            adapter = MainActivity.room.checklistsDao().getChecklists()
             //binding.recyclerList.adapter = adapter
         }
 
