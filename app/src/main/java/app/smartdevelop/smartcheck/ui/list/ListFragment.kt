@@ -13,6 +13,7 @@ import app.smartdevelop.smartcheck.databinding.FragmentListBinding
 import app.smartdevelop.smartcheck.model.Checklistdb
 import app.smartdevelop.smartcheck.model.Checklists
 import app.smartdevelop.smartcheck.model.DatabaseProvider
+import app.smartdevelop.smartcheck.ui.dialogText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -62,6 +63,9 @@ class ListFragment :  Fragment() {
     }
 
     fun creatorList( textTitle:String, textCreate:String, textCancel:String) {
+
+        val answer : String = dialogText(requireContext(),textTitle,textCreate,textCancel)
+
         val input = EditText(requireContext())
         val dialog = AlertDialog.Builder(requireContext())
             .setTitle(textTitle)
@@ -80,6 +84,9 @@ class ListFragment :  Fragment() {
             .create()
         dialog.show()
     }
+
+
+
 
     private fun insertListDB(checklistName: String) {
         CoroutineScope(Dispatchers.IO).launch {
