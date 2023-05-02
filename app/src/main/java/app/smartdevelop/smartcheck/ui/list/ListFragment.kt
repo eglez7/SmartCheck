@@ -41,7 +41,7 @@ class ListFragment :  Fragment() {
         getListsDB()
 
         binding.addList.setOnClickListener {
-            creatorList(getString(R.string.add_checklist),getString(R.string.create),getString(R.string.cancel))
+            creatorList()
         }
 
         listViewModel.text.observe(viewLifecycleOwner) {
@@ -62,27 +62,15 @@ class ListFragment :  Fragment() {
         }
     }
 
-    fun creatorList( textTitle:String, textCreate:String, textCancel:String) {
-
-        val answer : String = dialogText(requireContext(),textTitle,textCreate,textCancel)
-
-        val input = EditText(requireContext())
-        val dialog = AlertDialog.Builder(requireContext())
-            .setTitle(textTitle)
-            .setView(input)
-            .setPositiveButton(textCreate) { _, _ ->
-                val checklistName = input.text.toString()
-                if (checklistName.isNotEmpty()) {
-                    insertListDB(checklistName)
-                }
-            }
-            .setNegativeButton(
-                textCancel
-            ) { dialog, _ ->
-                dialog.cancel()
-            }
-            .create()
-        dialog.show()
+    fun creatorList() {
+        dialogText(
+            requireContext(),
+            getString(R.string.add_checklist),
+            getString(R.string.create),
+            getString(R.string.cancel)
+        ) { result ->
+            if (result != "") insertListDB(result)
+        }
     }
 
 
