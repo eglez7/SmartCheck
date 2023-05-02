@@ -10,9 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import app.smartdevelop.smartcheck.R
 import app.smartdevelop.smartcheck.databinding.ViewListBinding
 import app.smartdevelop.smartcheck.inflate
+import app.smartdevelop.smartcheck.model.Checklistdb
 import app.smartdevelop.smartcheck.model.Checklists
+import app.smartdevelop.smartcheck.model.DatabaseProvider
 import app.smartdevelop.smartcheck.model.Details
-import app.smartdevelop.smartcheck.ui.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,12 +43,15 @@ class ListAdapter(var items: List<Checklists> = emptyList()) : RecyclerView.Adap
 
         private val binding = ViewListBinding.bind(view)
         private lateinit var listNow: Checklists
+        var database: Checklistdb
 
         init {
             itemView.setOnCreateContextMenuListener(this)
+            database = DatabaseProvider.getDatabase(itemView.context)
         }
 
         fun bind(listItem: Checklists) {
+
             listNow = listItem
             with(binding) {
                 itemList.text = listItem.name
@@ -92,7 +96,7 @@ class ListAdapter(var items: List<Checklists> = emptyList()) : RecyclerView.Adap
             builder.setMessage("¿Estás seguro de que quieres continuar?")
             builder.setPositiveButton("Sí") { dialog, which ->
                 CoroutineScope(Dispatchers.IO).launch {
-                    MainActivity.room.checklistsDao().delete(listNow)
+                    database.checklistsDao().delete(listNow)
                 }
             }
             builder.setNegativeButton("No") { dialog, which ->
@@ -104,9 +108,9 @@ class ListAdapter(var items: List<Checklists> = emptyList()) : RecyclerView.Adap
         private fun updateListActivity(updatedChecklistName: String) {
             CoroutineScope(Dispatchers.IO).launch {
                 val dependientes: List<Details> =
-                    MainActivity.room.detailsDao().getDetailsById(listNow.id)
-                MainActivity.room.detailsDao().deleteAll(dependientes)
-                MainActivity.room.checklistsDao().update(
+                    database.detailsDao().getDetailsById(listNow.id)
+                database.detailsDao().deleteAll(dependientes)
+                database.checklistsDao().update(
                     Checklists(listNow.id, updatedChecklistName)
                 )
             }

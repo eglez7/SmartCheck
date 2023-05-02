@@ -7,27 +7,22 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
-import androidx.room.Room
 import app.smartdevelop.smartcheck.R
 import app.smartdevelop.smartcheck.databinding.FragmentListBinding
 import app.smartdevelop.smartcheck.model.Checklistdb
 import app.smartdevelop.smartcheck.model.Checklists
-import app.smartdevelop.smartcheck.ui.MainActivity
+import app.smartdevelop.smartcheck.model.DatabaseProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class ListFragment : Fragment() {
+class ListFragment :  Fragment() {
 
     private var _binding: FragmentListBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
-    lateinit var adapter : List<Checklists>
+
+    lateinit var database: Checklistdb
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,9 +35,10 @@ class ListFragment : Fragment() {
         _binding = FragmentListBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        MainActivity.room = Room.databaseBuilder(requireContext(), Checklistdb::class.java,"checklist").build()
+        database = DatabaseProvider.getDatabase(requireContext().applicationContext)
 
         getListsDB()
+
         binding.addList.setOnClickListener {
             creatorList(getString(R.string.add_checklist),getString(R.string.create),getString(R.string.cancel))
         }
@@ -60,7 +56,7 @@ class ListFragment : Fragment() {
 
     fun getListsDB() {
         CoroutineScope(Dispatchers.IO).launch {
-            val adapter: List<Checklists> = MainActivity.room.checklistsDao().getChecklists()
+            val adapter = database.checklistsDao().getChecklists()
             binding.recyclerList.adapter = ListAdapter(adapter)
         }
     }
@@ -87,8 +83,7 @@ class ListFragment : Fragment() {
 
     private fun insertListDB(checklistName: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            MainActivity.room.checklistsDao().insert(Checklists(name = checklistName))
-//            getListsDB()
+            database.checklistsDao().insert(Checklists(name = checklistName))
         }
     }
 }
