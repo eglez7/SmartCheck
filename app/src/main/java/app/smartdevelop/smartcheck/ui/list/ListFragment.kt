@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import app.smartdevelop.smartcheck.R
@@ -72,9 +70,6 @@ class ListFragment :  Fragment() {
             if (result != "") insertListDB(result)
         }
     }
-
-
-
 
     private fun insertListDB(checklistName: String) {
         CoroutineScope(Dispatchers.IO).launch {
