@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 
 fun Context.toast(texto: String, lenght:Int= Toast.LENGTH_SHORT) {
@@ -27,6 +28,13 @@ fun ViewGroup.inflate(@LayoutRes layoutRes: Int): View {
 
 // PERMITE LLAMAR A UNA ACTIVIDAD DESDE OTRA
 inline fun <reified T: Activity> Context.startActivity(vararg pairs: Pair<String, Any?>){
+    Intent(this,T::class.java).apply {
+        putExtras(bundleOf(*pairs))
+    }
+        .also (::startActivity)
+}
+
+inline fun <reified T: Fragment> Context.startFragment(vararg pairs: Pair<String, Any?>){
     Intent(this,T::class.java).apply {
         putExtras(bundleOf(*pairs))
     }

@@ -4,39 +4,68 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.ListFragment
+import androidx.lifecycle.lifecycleScope
+import app.smartdevelop.smartcheck.R
 import app.smartdevelop.smartcheck.databinding.FragmentDetailBinding
+import app.smartdevelop.smartcheck.ui.MainActivity
+import kotlinx.coroutines.launch
+import kotlin.properties.Delegates
 
-class DetailFragment : Fragment() {
+class DetailFragment : Fragment(), DetailPresenter.View {
 
-    private var _binding: FragmentDetailBinding? = null
+    companion object {
+        const val EXTRA_ID = "DetailActivity:id"
+    }
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentDetailBinding
+    private lateinit var presenter : DetailPresenter
+    var itemId by Delegates.notNull<Int>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val detailViewModel =
-            ViewModelProvider(this).get(DetailViewModel::class.java)
 
-        _binding = FragmentDetailBinding.inflate(inflater, container, false)
+        super.onCreate(savedInstanceState)
+        binding = FragmentDetailBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textGallery
-        detailViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        lifecycleScope.launch {
+
+            val queryTitle = MainActivity.room.checklistsDao().getChecklistsById(itemId)
+            //supportActionBar?.title = queryTitle?.name
         }
+
+        getDetailsDB()
+
+        binding.addItem.setOnClickListener{
+            creatorDetail()
+        }
+
+
+
         return root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
+
+    override fun creatorDetail() {
+        presenter.creatorDetail(itemId, getString(R.string.add_detail),getString(R.string.create),getString(
+            R.string.cancel))
+    }
+
+    override fun uncheckedAll() {
+        presenter.uncheckedAll(itemId)
+    }
+
+    override fun getDetailsDB() {
+        presenter.getDetailsDB(itemId)
+    }
+
+
 }
