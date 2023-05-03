@@ -2,39 +2,50 @@ package app.smartdevelop.smartcheck.ui.list
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import app.smartdevelop.smartcheck.OnItemClickListener
 import app.smartdevelop.smartcheck.R
 import app.smartdevelop.smartcheck.databinding.FragmentListBinding
 import app.smartdevelop.smartcheck.model.Checklistdb
-import app.smartdevelop.smartcheck.model.Checklists
-import app.smartdevelop.smartcheck.model.DatabaseProvider
-import app.smartdevelop.smartcheck.ui.dialogText
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import app.smartdevelop.smartcheck.ui.detail.DetailFragment
 
-class ListFragment :  Fragment() {
+class ListFragment : Fragment(), ListPresenter.View, OnItemClickListener, MenuProvider {
 
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var presenter: ListPresenter
     lateinit var database: Checklistdb
+    private lateinit var listener: OnItemClickListener
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-        val listViewModel =
-            ViewModelProvider(this).get(ListViewModel::class.java)
 
         _binding = FragmentListBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        database = DatabaseProvider.getDatabase(requireContext().applicationContext)
+        listener = this
+        presenter = ListPresenter(lifecycleScope, requireContext(), binding, listener)
 
         getListsDB()
 
@@ -42,38 +53,45 @@ class ListFragment :  Fragment() {
             creatorList()
         }
 
-        listViewModel.text.observe(viewLifecycleOwner) {
-
-        }
         return root
     }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.menu_list, menu)    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        if (menuItem.itemId == R.id.create) {
+            creatorList()
+        }
+        return true
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-    fun getListsDB() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val adapter = database.checklistsDao().getChecklists()
-            binding.recyclerList.adapter = ListAdapter(adapter)
-        }
+    override fun getListsDB() {
+        presenter.getListsDB()
     }
 
-    fun creatorList() {
-        dialogText(
-            requireContext(),
-            getString(R.string.add_checklist),
-            getString(R.string.create),
-            getString(R.string.cancel)
-        ) { result ->
-            if (result != "") insertListDB(result)
-        }
+    override fun creatorList() {
+        presenter.creatorList(
+            R.string.add_checklist,
+            R.string.create,
+            R.string.cancel
+        )
     }
 
-    private fun insertListDB(checklistName: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            database.checklistsDao().insert(Checklists(name = checklistName))
-        }
+    override fun onItemClick(item: Int) {
+        val nuevoFragmento = DetailFragment.newInstance(item)
+        parentFragmentManager
+            .beginTransaction()
+            .replace(R.id.nav_host_fragment_content_main, nuevoFragmento)
+            .addToBackStack(null)
+            .commit()
     }
+
+
 }

@@ -1,34 +1,33 @@
 package app.smartdevelop.smartcheck.ui.detail
 
 import android.annotation.SuppressLint
+import android.os.Looper
 import android.view.ContextMenu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import app.smartdevelop.smartcheck.R
 import app.smartdevelop.smartcheck.databinding.ViewDetailBinding
 import app.smartdevelop.smartcheck.inflate
+import app.smartdevelop.smartcheck.model.Checklistdb
 import app.smartdevelop.smartcheck.model.Details
-import app.smartdevelop.smartcheck.ui.MainActivity
+import app.smartdevelop.smartcheck.model.getDatabase
+import app.smartdevelop.smartcheck.ui.dialogConfirm
+import app.smartdevelop.smartcheck.ui.dialogEditText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.properties.Delegates
 
 @SuppressLint("NotifyDataSetChanged")
-class DetailAdapter(
-    items: List<Details>,
-) : RecyclerView.Adapter<DetailAdapter.ViewHolder>() {
+class DetailAdapter(private var items: List<Details>, private val currentList:Int) :
+    RecyclerView.Adapter<DetailAdapter.ViewHolder>() {
 
-    var items: List<Details> by Delegates.observable(items){ _, _, _, ->
-        notifyDataSetChanged()
+    @SuppressLint("NotifyDataSetChanged")
+    private fun updateItems(newItems: List<Details>) {
+        items = newItems
+        android.os.Handler(Looper.getMainLooper()).post { notifyDataSetChanged() }
     }
-
-    // DEVUELVE EL NÚMERO DE items DE LA LISTA
-    override fun getItemCount(): Int = items.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = parent.inflate(R.layout.view_detail)
@@ -40,80 +39,102 @@ class DetailAdapter(
         holder.bind(item)
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view),  View.OnCreateContextMenuListener {
+    override fun getItemCount(): Int = items.size
+
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnCreateContextMenuListener {
+
         private val binding = ViewDetailBinding.bind(view)
-        private lateinit var itemNow : Details
+        private lateinit var currentItem: Details
+        val database: Checklistdb = getDatabase(itemView.context)
 
         fun bind(listItem: Details) {
             with(binding) {
-                itemNow=listItem
-                checkBox.isChecked=listItem.selected
+                currentItem = listItem
+                checkBox.isChecked = listItem.selected
                 checkBox.text = listItem.detail
-                checkBox.setOnClickListener(){
+                checkBox.setOnClickListener() {
                     CoroutineScope(Dispatchers.IO).launch {
-                        MainActivity.room.detailsDao().update(
-                            Details(
-                                listItem.id,
-                                listItem.detail,
-                                !listItem.selected,
-                                listItem.listId
-                            )
-                        )
+                        updateCheckbox(listItem)
                     }
                 }
                 checkBox.setOnCreateContextMenuListener(this@ViewHolder)
             }
         }
 
-        override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
+        override fun onCreateContextMenu(
+            menu: ContextMenu,
+            v: View,
+            menuInfo: ContextMenu.ContextMenuInfo?,
+        ) {
             menu.add(R.string.edit).setOnMenuItemClickListener(onEditMenu)
             menu.add(R.string.delete).setOnMenuItemClickListener(onDeleteMenu)
         }
 
         private val onEditMenu = MenuItem.OnMenuItemClickListener {
-            val input = EditText(itemView.context)
-            input.setText(binding.checkBox.text)
 
-            val dialog = AlertDialog.Builder(itemView.context)
-                .setTitle(R.string.edit_checklist)
-                .setView(input)
-                .setPositiveButton(R.string.save, { _, _ ->
-                    val updatedChecklistName = input.text.toString()
-                    if (updatedChecklistName.isNotEmpty()) {
-                        updateListActivity(updatedChecklistName)
-                    }
-                })
-                .setNegativeButton(R.string.cancel, { dialog, _ ->
-                    dialog.cancel()
-                })
-                .create()
-            dialog.show()
+            dialogEditText(
+                itemView.context, binding.checkBox.text as String,R.string.edit_detail,R.string.save,R.string.cancel
+            ) { result ->
+                if (result != "") updateListActivity(result)
+            }
+
             true
         }
 
         private val onDeleteMenu = MenuItem.OnMenuItemClickListener {
 
-                val builder = AlertDialog.Builder(itemView.context)
-                builder.setTitle("Confirmación")
-                builder.setMessage("¿Estás seguro de que quieres continuar?")
-                builder.setPositiveButton("Sí") { dialog, which ->
+            dialogConfirm(
+                itemView.context,
+                R.string.text_confirm_title_delete,
+                R.string.text_confirm_message
+            ) { result ->
+                if (result == "yes") {
                     CoroutineScope(Dispatchers.IO).launch {
-                        MainActivity.room.detailsDao().delete(itemNow)
+                        deleteDetail()
+                        updateItemsAdapter()
                     }
                 }
-                builder.setNegativeButton("No") { dialog, which ->
-                }
-                builder.show()
-
+            }
 
             true
         }
-        private fun updateListActivity(updatedChecklistName: String) {
-            CoroutineScope(Dispatchers.IO).launch {
-                MainActivity.room.detailsDao().update(
-                    Details(itemNow.id, updatedChecklistName,itemNow.selected,itemNow.listId)
+
+        private suspend fun updateCheckbox(detail:Details){
+            database.detailsDao().update(
+                Details(
+                    detail.id,
+                    detail.detail,
+                    !detail.selected,
+                    detail.listId
                 )
+            )
+        }
+
+        private suspend fun deleteDetail() {
+            database.detailsDao().delete(currentItem)
+        }
+
+        private fun updateListActivity(updatedItemName: String) {
+            CoroutineScope(Dispatchers.IO).launch {
+                updateList(updatedItemName)
+                updateItemsAdapter()
             }
+        }
+
+        private suspend fun updateList(updatedItemName: String){
+            database.detailsDao().update(
+                Details(
+                    currentItem.id,
+                    updatedItemName,
+                    currentItem.selected,
+                    currentItem.listId
+                )
+            )
+        }
+
+        private suspend fun updateItemsAdapter() {
+            val updateDetails = database.detailsDao().getDetailsById(currentList)
+            updateItems(updateDetails)
         }
 
     }

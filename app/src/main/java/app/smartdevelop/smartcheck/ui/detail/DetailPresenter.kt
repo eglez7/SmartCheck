@@ -4,14 +4,19 @@ import android.content.Context
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import app.smartdevelop.smartcheck.databinding.FragmentDetailBinding
+import app.smartdevelop.smartcheck.model.Checklistdb
 import app.smartdevelop.smartcheck.model.Details
-import app.smartdevelop.smartcheck.ui.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class DetailPresenter  (private val context: Context, private val scope: CoroutineScope, val binding: FragmentDetailBinding)  {
+class DetailPresenter(
+    val database: Checklistdb,
+    private val scope: CoroutineScope,
+    private val context: Context,
+    private val binding: FragmentDetailBinding,
+)  {
     interface View {
         fun creatorDetail()
         fun getDetailsDB()
@@ -39,7 +44,7 @@ class DetailPresenter  (private val context: Context, private val scope: Corouti
 
     private fun insertDetailDB(detailText: String, itemId:Int) {
         scope.launch {
-            MainActivity.room.detailsDao()
+            database.detailsDao()
                 .insert(Details(detail = detailText, selected = false, listId = itemId))
             getDetailsDB(itemId)
         }
@@ -48,18 +53,20 @@ class DetailPresenter  (private val context: Context, private val scope: Corouti
     fun getDetailsDB(itemId: Int) {
         scope.launch {
             val items = withContext(Dispatchers.IO) {
-                MainActivity.room.detailsDao().getDetailsById(itemId)
+                database.detailsDao().getDetailsById(itemId)
             }
-            binding.recyclerDetail.adapter = DetailAdapter(items)
+            binding.recyclerDetail.adapter = DetailAdapter(items, itemId)
         }
     }
 
     fun uncheckedAll(itemId : Int) {
         scope.launch {
-            (MainActivity.room.detailsDao().getDetailsById(itemId)).forEach() {
+            (database.detailsDao().getDetailsById(itemId)).forEach() {
                 it.selected = false
-                MainActivity.room.detailsDao().update(it)
+                database.detailsDao().update(it)
             }
+            getDetailsDB(itemId)
         }
     }
+
 }

@@ -14,7 +14,7 @@ interface ChecklistsDao {
     suspend fun insert(vararg checklists: Checklists)
 
     @Query("SELECT * FROM checklists")
-    fun getChecklists(): List<Checklists>
+    suspend fun getChecklists(): List<Checklists>
 
     @Query("SELECT * FROM checklists WHERE id = :id LIMIT 1")
     suspend fun getChecklistsById(id: Int): Checklists?

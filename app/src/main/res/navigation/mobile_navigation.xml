@@ -9,10 +9,20 @@
         android:id="@+id/nav_list"
         android:name="app.smartdevelop.smartcheck.ui.list.ListFragment"
         android:label="@string/menu_list"
-        tools:layout="@layout/fragment_list" />
+        tools:layout="@layout/fragment_list" >
+        <action
+            android:id="@+id/action_nav_list_to_nav_detail2"
+            app:destination="@id/nav_detail" />
+    </fragment>
 
     <fragment
-        android:id="@+id/nav_slideshow"
+        android:id="@+id/nav_detail"
+        android:name="app.smartdevelop.smartcheck.ui.detail.DetailFragment"
+        android:label="@string/menu_detail"
+        tools:layout="@layout/fragment_detail"/>
+
+    <fragment
+        android:id="@+id/nav_about"
         android:name="app.smartdevelop.smartcheck.ui.about.AboutFragment"
         android:label="@string/menu_about"
         tools:layout="@layout/fragment_about" />

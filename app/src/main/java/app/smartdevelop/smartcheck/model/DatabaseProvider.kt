@@ -6,7 +6,7 @@ import androidx.room.Room
 object DatabaseProvider {
     private var database: Checklistdb? = null
 
-    fun getDatabase(context: Context): Checklistdb {
+    fun setDatabase(context: Context): Checklistdb {
         if (database == null) {
             database = Room.databaseBuilder(context.applicationContext, Checklistdb::class.java, "my-database")
                 .fallbackToDestructiveMigration()
@@ -14,4 +14,8 @@ object DatabaseProvider {
         }
         return database!!
     }
+}
+
+fun getDatabase(context: Context) : Checklistdb{
+    return DatabaseProvider.setDatabase(context)
 }
