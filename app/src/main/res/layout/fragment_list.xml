@@ -10,7 +10,7 @@
         android:id="@+id/add_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="36dp"
         android:clickable="true"
         android:contentDescription="@string/new_list_description"
         android:src="@android:drawable/ic_input_add"
