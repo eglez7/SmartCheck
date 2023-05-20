@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="text_developer">Developer for:</string>
+    <string name="menu_list">Lists</string>
+    <string name="menu_about">About</string>
+    <string name="new_list_description">New List</string>
+    <string name="edit_checklist">Edit List</string>
+    <string name="edit_detail">Edit Item</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="add_checklist">New List</string>
+    <string name="create">Create</string>
+    <string name="Uncheck_all">Uncheck all</string>
+    <string name="nuevo_item_descripcion">New Item</string>
+    <string name="add_detail">New Item</string>
+    <string name="button_yes">Yes</string>
+    <string name="button_no">No</string>
+    <string name="text_confirm_title_delete">Delete</string>
+    <string name="text_confirm_message">Are you sure you want to proceed?</string>
+    <string name="menu_detail">Detail</string>
+</resources>

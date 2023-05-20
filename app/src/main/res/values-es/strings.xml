@@ -1,13 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Smart Check</string>
-    <string name="text_developer">Desarrollador por:</string>
-    <string name="app_url" translatable="false">www.smartdevelop.app</string>
-    <string name="nav_header_desc" translatable="false">Navigation header</string>
-
+    <string name="text_developer">Desarrollado por:</string>
     <string name="menu_list">Listas</string>
     <string name="menu_about">Acerca de</string>
-    <string name="new_list_description">Nueva lista</string>
-    <string name="texto_alternativo" translatable="false">texto alternativo</string>
+    <string name="new_list_description">Nueva Lista</string>
     <string name="edit_checklist">Editar Lista</string>
     <string name="edit_detail">Editar Item</string>
     <string name="save">Guardar</string>
@@ -16,16 +12,12 @@
     <string name="delete">Eliminar</string>
     <string name="add_checklist">Nueva Lista</string>
     <string name="create">Crear</string>
-    <string name="checkbox" translatable="false">CheckBox</string>
     <string name="Uncheck_all">Desmarcar todas</string>
     <string name="nuevo_item_descripcion">Nuevo Item</string>
-    <string name="add_detail">Nuevo item</string>
-
+    <string name="add_detail">Nuevo Item</string>
     <string name="button_yes">Si</string>
     <string name="button_no">No</string>
     <string name="text_confirm_title_delete">Eliminar</string>
     <string name="text_confirm_message">¿Estás seguro de que quieres continuar?</string>
     <string name="menu_detail">Detalle</string>
-
-
 </resources>
